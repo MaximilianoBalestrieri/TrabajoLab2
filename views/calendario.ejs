@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Fecha con Calendario</title>
+</head>
+<body>
+
+    <h2>Selecciona una fecha:</h2>
+
+    <!-- Calendario para seleccionar una fecha -->
+    <input type="date" id="fechaSeleccionada">
+
+    <!-- Botón para obtener la fecha seleccionada -->
+    <button onclick="mostrarFecha()">Mostrar Fecha</button>
+
+    <!-- Lugar donde se mostrará la fecha seleccionada -->
+    <p id="fechaResultado"></p>
+
+    <script>
+        function mostrarFecha() {
+            // Obtener el valor de la fecha seleccionada
+            const fecha = document.getElementById('fechaSeleccionada').value;
+            
+            // Mostrar la fecha seleccionada en el párrafo
+            document.getElementById('fechaResultado').textContent = "Fecha seleccionada: " + fecha;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,564 @@
+<% function getTodayDate(fecha) {
+    const today = new Date(fecha);
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Mes con dos dígitos
+    const day = String(today.getDate()).padStart(2, '0'); // Día con dos dígitos
+    
+    return `${day}-${month}-${year}`;
+}
+%>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia Clínica</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    
+</head>
+<body>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.ql-tooltip.ql-hidden {  /* esto es para que no aparezca el input del texto enriquecido  */
+    display: none;
+}
+
+.back-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+header {
+   /* position: sticky;*/
+    top: 0;
+    background-color: white;
+    margin-bottom: 20px;
+    z-index: 1000;
+}
+
+header img {
+    width: 100%; /* La imagen ahora ocupará todo el ancho */
+    height: 300px;
+}
+
+h1 {
+    position: absolute;
+    top: 350px;
+    left: 400px;
+    text-align: center;
+    color: rgb(16, 1, 1); /* Aseguramos que el texto sea visible sobre la imagen */
+    font-size: 30px;
+    z-index: 1;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+td{
+    height: 35px;
+}
+section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#historial, table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#historial th, #historial-atenciones td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#historial th {
+    background-color: #f2f2f2;
+}
+
+#historial tbody tr:nth-child(odd) {
+  background-color: #bbcbb5;
+}
+
+#evoluciones, table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#evoluciones th, #evoluciones-atenciones td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#evoluciones th {
+    background-color: #f2f2f2;
+}
+
+#evoluciones tbody tr:nth-child(odd) {
+  background-color: #bbcbb5;
+}
+
+#medicamentos, table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#medicamentos th, #medicamentos td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#medicamentos th {
+    background-color: #f2f2f2;
+}
+#medicamentos tbody tr:nth-child(odd) {
+  background-color: #bbcbb5;
+}
+
+
+#alergias, table {
+    width: 100%;
+    border-collapse: collapse;
+}
+#alergias tbody tr:nth-child(odd) {
+  background-color: #bbcbb5;
+}
+#antecedentes, table {
+    width: 100%;
+    border-collapse: collapse;
+}
+#antecedentes tbody tr:nth-child(odd) {
+  background-color: #bbcbb5;
+}
+#habitos, table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#alergias th, #alergias td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+#antedecentes th, #antecedentes td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+#habitos tbody tr:nth-child(odd) {
+  background-color: #bbcbb5;
+}
+#habitos th, #habitos td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+#alergias th {
+    background-color: #f2f2f2;
+}
+#antecedentes th {
+    background-color: #f2f2f2;
+    height: 40px;
+    text-align: left;
+}
+#habitos th {
+    background-color: #f2f2f2;
+    height: 40px;
+}
+#medico {
+    
+    margin-top: -70px;
+    margin-left: 500px;
+    width: 500px;
+    height: 20px;
+    /* visibility: hidden;*/
+}
+h2 {
+  color: #fcfafa;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: rgb(93, 155, 54);
+  border-radius: 5px;
+}
+
+form input, form textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+form button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+.alergia-group {
+    margin-bottom: 20px;
+}
+
+.importancia-group {
+    margin-bottom: 20px;
+}
+.antecedentes-group {
+    margin-bottom: 20px;
+}
+.alergia-label {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+p{
+    padding: 0px;
+}
+
+.fecha-group {
+    width: 300px;
+    display: flex;
+    align-items: center; /* Alinea verticalmente al centro */
+    gap: 10px; /* Espacio entre elementos */
+}
+
+.fecha-group label {
+    margin-right: 5px; /* Opcional: espacio entre label e input */
+}
+
+    </style>
+    <header>
+        <img src="/imagenes/medical.png" alt="Imagen de cabecera">   
+    </header>
+<main>
+    <h1>VISTA DE LA HISTORIA CLINICA</h1>
+<!----------------------------------- Datos del paciente --> 
+       <section id="datos-paciente"></section>
+       <h2>Datos del Paciente</h2>
+       <% if (paciente) { %>                     
+            <p><strong>Nombre: </strong><%= paciente.nombre %></p>
+            <p><strong>DNI: </strong> <%= paciente.dni %></p>
+            <script>let dnipaciente = '<%= paciente.dni %>';</script>
+            <p><strong>Fecha de Nacimiento: </strong> <%= getTodayDate(paciente.nacimiento) %></p>
+            <p><strong>Sexo: </strong> <%= paciente.sexo %></p>
+            <p><strong>Celular: </strong> <%= paciente.telefono %></p>
+        </section>                   
+    </form>
+<% }%>
+
+<!------------------------------------ nombre del medico -->
+<section id="medico">
+    <table id="medico-table" class="display">
+        <thead>
+            <tr>
+            </tr>
+        </thead>
+        <tbody>
+        <% if (medico.length > 0) { %>
+            <% medico.forEach((item)=> {%>
+                <tr>
+                    <td><%= item.dniMedico %></td>
+                    <td><%= item.nombreMedico %></td>
+                    <script>  // obtengo los datos que necesito dniMedico y nombreMedico
+                        const docuMedico = '<%= item.dniMedico %>'    
+                        const nombreMedico = '<%= item.nombreMedico %>';
+                    </script>
+                </tr>
+                  <% }) %>  
+                  <% } else { %>
+                    <tr>
+                      <td colspan="3">algo esta mal...</td>
+                    </tr>
+                  <% } %> 
+        </tbody>
+    </table>
+</section>
+
+<!------------------------------- Historial de atenciones -->
+        <section id="historial">
+            <h2>Historial de Atenciones</h2>
+            <table id="historial-table" class="display">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Motivo</th>
+                        <th>Doctor</th>
+                        <th>Diagnostico</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% if (historial.length > 0) { %>
+                    <% historial.forEach((item)=> {%>
+                        <tr>
+                            <td><%= getTodayDate(item.fecha) %></td>
+                            <td><%= item.motivo %></td>
+                            <td><%= item.nombre %></td>
+                            <td><%= item.diagnostico %></td>
+                            <script>  // obtengo la fecha de la consulta del dia
+                                let diaActualDiag = '<%= item.fecha %>'    
+                               
+                            </script> 
+                        </tr>
+                          <% }) %>  
+                          <% } else { %>
+                            <tr>
+                              <td colspan="3">El paciente no tiene atenciones previas</td>
+                            </tr>
+                          <% } %> 
+                </tbody>
+            </table>
+        </section>
+
+      
+
+<!------------------------ Sección de Alergias -->
+<section id="alergias">
+    <h2>Alergias</h2>
+    <table id="alergias-table" class="display">
+        <thead>
+            <tr>
+                <th>Alergia</th>
+                <th>Importancia</th>
+                <th>Fecha Desde</th>
+                <th>Fecha Hasta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (alergias.length > 0) { %>
+            <% alergias.forEach((item)=> {%>
+                <tr>
+                    <td><%= item.nombreAlergia %></td>
+                    <td><%= item.importancia %></td>
+                    <td><%= getTodayDate(item.fechaDesde) %></td>
+                    <td><%= getTodayDate(item.fechaHasta) %></td>
+                </tr>
+                  <% }) %>  
+                  <% } else { %>
+                    <tr>
+                      <td colspan="3">El paciente no tiene alergias registradas</td>
+                    </tr>
+                  <% } %> 
+        </tbody>
+    </table>
+   
+</section>
+           
+<!---------------------------- Sección de Antecedentes patologicos -->
+ <section id="antecedentes">
+    <h2>Antecedentes Patológicos</h2>
+    <table id="antecedentes-table" class="display">
+        <thead>
+            <tr>
+                <th>Antecedentes Patológicos</th>
+                <th>Fecha Desde</th>
+                <th>Fecha Hasta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (antecedentes.length > 0) { %>
+            <% antecedentes.forEach((item)=> {%>
+                <tr>
+                    <td><%= item.nombreAntecedente %></td>
+                    <td><%= getTodayDate(item.fechaDesde) %></td>
+                    <td><%= getTodayDate(item.fechaHasta) %></td>
+                </tr>
+                  <% }) %> 
+                  <% } else { %>
+                    <tr>
+                      <td colspan="3">El paciente no tiene antecedentes previos</td>
+                    </tr>
+                  <% } %> 
+        </tbody>
+    </table>
+    
+</section>
+
+<!----------------------------- Sección de Hábitos -->
+<section id="habitos">
+    <h2>Hábitos</h2>
+    <table id="habitos-table" class="display">
+        <thead>
+            <tr>
+                <th>Hábitos</th>
+                <th>Fecha Desde</th>
+                <th>Fecha Hasta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (habitos.length > 0) { %>
+            <% habitos.forEach((item)=> {%>
+                <tr>
+                    <td><%= item.nombreHabito %></td>
+                    <td><%= getTodayDate(item.fechaDesde) %></td> 
+                    <td><%= getTodayDate(item.fechaHasta) %></td>
+                </tr>
+                  <% }) %> 
+                  <% } else { %>
+                    <tr>
+                      <td colspan="3">El paciente no tiene hábitos registrados</td>
+                    </tr>
+                  <% } %> 
+        </tbody>
+    </table>
+    
+</section>
+
+<!-------------------------- Sección de Medicamentos -->
+ <section id="medicamentos">
+    <h2>Medicamentos</h2>
+    <table id="medicamentos-table" class="display table-striped">
+        <thead>
+            <tr>
+                <th>Medicamento</th>
+                <th>Dosis</th>
+                <th>Frecuencia</th>
+            </tr>
+        </thead>
+        <tbody> 
+            <% if (user.length > 0) { %>   
+        <% user.forEach((item)=> {%>
+            <tr>
+                <td><%= item.nombreMedicamento %></td>
+                <td><%= item.dosis %></td>
+                <td><%= item.frecuencia %></td>
+            </tr>
+              <% }) %>    
+              <% } else { %>
+                <tr>
+                  <td colspan="3">El paciente no tiene medicamentos recetados</td>
+                </tr>
+              <% } %>               
+        </tbody>
+    </table>
+    
+</section>
+
+<!------------------------------------ historial -->
+
+  <!-- Historial de evoluciones -->
+  <section id="evoluciones">
+    <h2>Historial de Evoluciones</h2>
+    <table id="evoluciones-table" class="display">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Evoluciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% if (evolucion.length > 0) { %>
+            <% evolucion.forEach((item)=> {%>
+                <tr>
+                    <td><%= getTodayDate(item.fechaEvolucion) %></td>
+                    <td><%- item.evolucion %></td>         
+                    <script>  // obtengo la fecha de la consulta del dia
+                        let diaActual = '<%= item.fechaEvolucion %>'    
+                       // console.log('el dia es', diaActual);
+                    </script>        
+                </tr>
+                  <% }) %>  
+                  <% } else { %>
+                    <tr>
+                      <td colspan="3">El paciente no tiene evoluciones previas</td>
+                    </tr>
+                  <% } %> 
+        </tbody>
+    </table>
+
+            
+        </section>
+        <button onclick="goToPreviousPage()" class="back-button">Cerrar Vista</button>
+</main>
+<script>
+
+//----------------------------------------
+// Variable para rastrear si se ha presionado el botón "Agregar Evolución"
+let isAdded = false; 
+ //------- pone la fecha actual en diagnostico y Evolucion  
+// const hoy= new Date().toISOString().split('T')[0];
+ const hoy = new Date().toLocaleDateString('en-AR'); // Formato AAAA-MM-DD
+ document.getElementById('fecha4').value =hoy;  
+ document.getElementById('fecha5').value =hoy;    
+
+function goToPreviousPage() {
+  
+    window.location.href = "/agenda";
+} 
+
+//----------------------------------------
+
+        let idAgenda="<%- JSON.stringify(idAgenda) %>"  //va en esta pagina
+ 
+        // toma el dni del paciente 
+        const dniInput = document.getElementById('dnipaciente');
+        dniInput.value = dnipaciente;    
+          
+           
+//*************** va a la pagina anterior   
+    idAgenda=JSON.parse(idAgenda);
+    
+
+/*****************para el texto enriquecido***********************************/
+        const Font = Quill.import('formats/font');
+        Quill.register(Font, true);
+        const Size = Quill.import('formats/size');
+        Quill.register(Size, true);
+        const evaluaciones = new Quill('#evaluaciones', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'indent': '-1' }, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+                ]
+            }
+        });
+/*********** Formato de la fecha ******************************/
+function getTodayDate(fecha) {
+        const today = new Date(fecha);
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Mes con dos dígitos
+        const day = String(today.getDate()).padStart(2, '0'); // Día con dos dígitos
+        return `${year}-${month}-${day}`;
+    }
+
+ </script>
+</body>
+</html>

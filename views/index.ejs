@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head> 
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instituto Médico Merlo</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    
+</head>
+<body>
+    <style>
+
+  #myDiv {
+    width: 322px;
+    background-color: white ;
+  }
+   #turnos{
+    margin-top: 40px;
+   }
+   #salir{
+    margin-left: 720px;
+   }
+   #pagina {
+            display: none; /* Ocultar por defecto */
+           
+    }
+    .login-form img {
+    float: right; /* Esto hace que la imagen flote a la derecha */
+    width: 150px;
+    height: 230px;
+    margin-top: -65px;
+}
+    </style>
+    <div class="background-image">
+
+        <h1>Instituto Médico Merlo</h1>
+       <h4 id="especialidad"></h4>
+       <h4 id="apellido"></h4>  
+        <div class="menulogin">
+            <button id="loginBtn" class="enabled">Login</button>
+        </div>
+        
+        <!-- Barra de menú con botones -->
+        <div class="menu">
+            <a href="http://localhost:3000/usuarios" class="btn">
+                <button id="usuarios" disabled>Usuarios</button>
+            </a>
+            <a href="http://localhost:3000/profesionales" class="btn">
+                <button id="profesionales" disabled>Profesionales</button>
+            </a>
+            
+                <button id="agenda" disabled>Ingresar</button>
+                <div id="pagina" >
+                    <h1 id="apellidoynombre">Dr. </h1>
+                    <h1 id="especialidades"></h1>                    
+                    <a href="http://localhost:3000/agenda" class="btn"> 
+                        <button id="turnos">Ver turnos</button>
+                    </a> 
+                    <button id="salir" onclick="location.reload()">Cerrar Sesión</button>
+                </div>
+                
+                <a href="http://localhost:3000/pacientes" class="btn">
+                    <button id="consultas" disabled>Pacientes</button>
+                </a>
+        </div>
+        
+        <!-- Formulario de login -->
+        <div id="loginForm" class="login-form">
+            <h2>Iniciar Sesión</h2>
+            <div><img src="/imagenes/doctora.JPG" alt="doctora"> </div>
+            <label for="username">Usuario:</label><br>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Contraseña:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+            <button type="button" id="submitBtn">Ingresar</button>
+        </div>
+
+        <footer>
+            <h3>Sistema de Atención Médica - Realizado por Maximiliano Balestrieri Ramseyer para Laboratorio II - ULP</h3>
+        </footer>
+    </div>
+
+    <script src="/js/script.js" type="text/javascript">  </script>
+    
+</body>
+</html>

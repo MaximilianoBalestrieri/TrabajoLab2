@@ -1,0 +1,373 @@
+<% function getTodayDate(fecha) {
+  const today = new Date(fecha);
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Mes con dos dígitos
+  const day = String(today.getDate()).padStart(2, '0'); // Día con dos dígitos
+  
+  return `${day}-${month}-${year}`;
+}
+%>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Médica</title>
+  <!-- <link rel="stylesheet" type="text/css" href="/css/vistas.css">  no lo toma -->
+ 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" >
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+
+
+  h1{
+        text-align: center;
+        color: white;
+        padding: 15px;
+        background-color: rgba(0, 0, 0, 0.7);
+        margin: 0; /* Asegura que no haya márgenes que causen desplazamiento */
+        margin-bottom: -40px;
+        border-radius: 5;
+}
+table {
+    width: auto;
+    height: 100px;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+    border: 3px solid #031622;
+    padding: 10px;
+}
+th {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+td {
+    padding: 5px;
+    border-bottom: 1px solid #0d0d0d;
+    text-align: center;
+    height: 0px;
+    
+}
+tr {
+    height: 40px; /* ajusta la altura de las filas */
+    line-height: 10px; 
+    color:rgb(140, 228, 158);
+}
+.boton-volver {
+height: 35px;
+background-color: #d0eed0; /* Verde */
+border: none;
+border-radius: 10px; /* Redondeado */
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+margin-top: -60px;
+margin-right: -50px;
+position: fixed;
+}
+
+.boton-volver:hover {
+background-color: #5b675b; /* Verde oscuro */
+color: #fff;
+}
+
+#myTable {
+  padding: 10px;
+  border: 3px solid #ddd;
+  background-color: #d0eed0;
+  
+}
+
+.dataTables_length, .dataTables_filter {
+    display: inline-table;
+    align-items: center; /* Centra verticalmente el texto y el input */
+    gap: 10px;
+    white-space: nowrap;
+    }
+    .dataTables_filter {
+      margin-top: -2px;
+      margin-right: 5px;
+    }
+    /* Opcional: Un poco de separación adicional para los controles de paginación */
+    .dataTables_paginate {
+      margin-top: 10px; /* Espacio encima de la paginación */
+    }
+    
+.dataTables_length label {
+     /* Elimina márgenes innecesarios */
+    white-space: nowrap; /* Asegura que el texto no se divida en varias líneas */
+    width: 80px;
+    float: left;
+}
+
+    thead {
+      background-color: #4CAF50; /* Color de fondo para el título */
+      color: white;    
+                /* Color del texto en el título */
+    }
+
+    .table thead th {
+  background-color: #4CAF50; /* Cambiar el color de fondo del encabezado */
+  color: #f7f6f6; /* Cambiar el color del texto del encabezado */
+}
+
+.table thead th:hover {
+  background-color: #abcdb6; /* Cambiar el color de fondo del encabezado al pasar el ratón */
+}
+.centered{
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+.table td, .table th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+
+h2{
+    padding: 40px;
+    margin-bottom: -80px;
+    text-align: center;
+}
+
+#reloj {
+    position: fixed;
+    top: 10px; /* Ajusta según el margen que desees */
+    right: 10px; /* Ajusta según el margen que desees */
+    background-color: #f1f1f1; /* Color de fondo del reloj */
+    padding: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+  /* Estilo para el input de tipo date */
+  input[type="date"] {
+            margin-top: 10px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #fff;
+            color: #333;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        input[type="date"]:focus {
+            border-color: #007BFF;
+        }
+
+</style>
+
+<body>
+ 
+ <h1>Agenda Médica - Turnos</h1>
+
+ <div id="reloj"></div> <!-- Aquí se mostrará el reloj -->
+  <h2 id="fecha-actual"></h2>
+
+    <div id="calendario" class="fechas">
+    <input type="date" id="fechaSeleccionada">
+    <button onclick="mostrarFecha()">Seleccionar Fecha </button>
+
+    <!-- Lugar donde se mostrará la fecha seleccionada -->
+    <p id="fechaResultado"> </p>
+  </div>
+  <h2 id="fecha-actual"></h2>
+  <div class="container mt-5">   
+    <!-- Tabla -->
+    <table id="myTable" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+      <tr>
+        <th class= "centered">HORA</th>
+        <th class= "centered">APELLIDO Y NOMBRE</th>
+        <th class= "centered">DNI</th>
+        <th class= "centered">MOTIVO</th>
+        <th class= "centered">ESTADO</th>
+        <th class= "centered">ATENCION</th>
+        <th class= "centered">H.C.E.</th>        
+      </tr>
+    </thead>
+    <tbody>
+      <% if (data.length > 0) { %>
+        <% data.forEach(function(agenda) { %>
+          <tr>
+            <td><%= agenda.horaInicio %></td>
+            <td><%= agenda.nombre %></td>
+            <td><%= agenda.dni %></td>
+            <td><%= agenda.motivoConsulta %></td>
+           <script> 
+            // Guardar en localStorage
+              localStorage.setItem('motivoConsulta', agenda.motivoConsulta); 
+           </script>
+
+            <td><%= agenda.estadoConsulta %></td>           
+      <!--  <td><i class="fa-regular fa-calendar-check"></i></td>-->
+           <td>
+           <!-- <a href="/historia/<%= agenda.dni %>/<%= agenda.idAgenda %>" class="btn btn-outline-info" >Iniciar Atención </a> -->
+           <a href="/historia/<%= agenda.dni %>/<%= agenda.idAgenda %>/<%= agenda.motivoConsulta %>" class="btn btn-outline-info" >Iniciar Atención </a> 
+           </td>
+           <td>
+            <a href="/vistaHistoria/<%= agenda.dni %>/<%= agenda.idAgenda %>" class="btn btn-outline-info" >Ver HCE </a> 
+           </td>
+          </tr>
+        <% }); %>
+      <% } else { %>
+        <tr>
+          <td colspan="3">No hay pacientes para hoy</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+  </div>
+  <button class="boton-volver" onclick="window.history.back();">Volver</button>  
+
+<script>
+  function showAgendaDetails(button) {
+  const dni = button.dataset.dni;
+  const Medico = button.dataset.medico;
+  const fecha = button.dataset.fecha;
+  const idagenda = button.dataset.agenda;
+  
+
+  // Now you have the data in variables:
+  console.log("DNI:", dni);
+  console.log("id del medico:", Medico);
+  console.log("Hora fecha:", fecha);
+  console.log("id de la agenda:", idagenda);
+
+      var dniMedico=Medico;
+      var dnipaciente=dni ;
+      var fechaInicio=fecha;
+      var idAgenda=idagenda;
+      
+        // Envía los datos al servidor
+        fetch('/estado', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ //const { dniMedico, dnipaciente, fechaInicio, estadoConsulta }
+              dniMedico:dniMedico,
+              dnipaciente:dnipaciente,
+              fechaInicio:fechaInicio,  
+              idAgenda:idAgenda
+                
+            })
+        })   
+
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+
+    }
+  </script>  
+<!-- jquery JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let verFecha;
+const queryParams = new URLSearchParams(window.location.search);
+const fechaAPintar = queryParams.get('fecha')
+if(!fechaAPintar){
+  const today = new Date(); const year = today.getFullYear(); const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses comienzan en 0 const day = String(today.getDate()).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  fecha = `${day}-${month}-${year}`
+ 
+  document.getElementById('fecha-actual').innerHTML = fecha;
+}else{
+  document.getElementById('fecha-actual').innerHTML = fechaAPintar;
+}
+
+  $(document).ready(function() {
+    $('#myTable').DataTable({
+      "paging": true,          // Activar paginación
+      "searching": true,       // Activar búsqueda
+      "info": true,            // Mostrar información de la tabla
+      "pageLength": 5,         // Cantidad de filas por página
+      "language": {            // Traducción al español
+        "lengthMenu": "Cantidad de registros por página_MENU_",
+        "zeroRecords": "No se encontraron resultados",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": "No hay registros disponibles",
+        "infoFiltered": "(filtrado de _MAX_ registros totales)",
+        "search": "Buscar:",
+        "paginate": {
+          "first": "Primero",
+          "last": "Último",
+          "next": "Siguiente",
+          "previous": "Anterior"
+        },
+        "loadingRecords": "Cargando...",
+        "processing": "Procesando...",
+        "emptyTable": "No hay datos disponibles en la tabla",
+        "aria": {
+          "sortAscending": ": activar para ordenar la columna de manera ascendente",
+          "sortDescending": ": activar para ordenar la columna de manera descendente"
+        }
+      }
+    });
+  });
+
+
+//************ RELOJ **********
+function actualizarReloj() {
+    const reloj = document.getElementById('reloj');
+    const ahora = new Date();
+
+    const horas = String(ahora.getHours()).padStart(2, '0');
+    const minutos = String(ahora.getMinutes()).padStart(2, '0');
+    const segundos = String(ahora.getSeconds()).padStart(2, '0');
+
+    // Formato: HH:MM:SS
+    reloj.textContent = `${horas}:${minutos}:${segundos}`;
+}
+
+// Actualizar el reloj cada segundo
+setInterval(actualizarReloj, 1000);
+
+// Ejecutar la función una vez para inicializar el reloj al cargar la página
+actualizarReloj();
+
+//****fecha que va arriba en grande
+const fechaActual = new Date();
+const fechaFormateada = fechaActual.toLocaleString('es-ES', {
+  weekday: 'long',
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric'
+});
+//document.getElementById('fecha-actual').innerHTML = fechaFormateada;
+//***************
+
+function mostrarFecha() {
+            // Obtener el valor de la fecha seleccionada del calendario
+            const fecha = document.getElementById('fechaSeleccionada').value;
+            // Mostrar la fecha seleccionada en el párrafo
+            
+            const fechaCalendarioFormateada = fecha.toLocaleString('es-ES', {
+            weekday: 'long',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+});
+
+window.location.href=('/agenda' + '?fecha=' + fechaCalendarioFormateada);
+}
+
+</script>
+</body>
+</html>

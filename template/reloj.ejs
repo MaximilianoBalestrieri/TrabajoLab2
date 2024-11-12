@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página con Reloj</title>
+    <link rel="stylesheet" href="estilos.css"> <!-- Archivo CSS para los estilos -->
+</head>
+<style>
+    #reloj {
+    position: fixed;
+    top: 10px; /* Ajusta según el margen que desees */
+    right: 10px; /* Ajusta según el margen que desees */
+    background-color: #f1f1f1; /* Color de fondo del reloj */
+    padding: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+</style>
+<body>
+    <h1>Bienvenido a la página</h1>
+
+    <div id="reloj"></div> <!-- Aquí se mostrará el reloj -->
+
+    <script >
+        function actualizarReloj() {
+    const reloj = document.getElementById('reloj');
+    const ahora = new Date();
+
+    const horas = String(ahora.getHours()).padStart(2, '0');
+    const minutos = String(ahora.getMinutes()).padStart(2, '0');
+    const segundos = String(ahora.getSeconds()).padStart(2, '0');
+
+    // Formato: HH:MM:SS
+    reloj.textContent = `${horas}:${minutos}:${segundos}`;
+}
+
+// Actualizar el reloj cada segundo
+setInterval(actualizarReloj, 1000);
+
+// Ejecutar la función una vez para inicializar el reloj al cargar la página
+actualizarReloj();
+    </script> <!-- Archivo JavaScript para el reloj -->
+</body>
+</html>

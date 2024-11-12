@@ -1,0 +1,168 @@
+        /* Estilos para el fondo y la página */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden; /* Oculta el desbordamiento horizontal */
+        }
+
+        /* Imagen de fondo */
+        .background-image {
+            background-image: url('/imagenes/fondo.png');
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative; /* Para que el footer absoluto se posicione dentro de este contenedor */
+            flex: 1;
+        }
+
+        /* Encabezado */
+        h1 {
+            text-align: center;
+            color: white;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            margin: 0; /* Asegura que no haya márgenes que causen desplazamiento */
+        }
+        #especialidades {
+           color: white; /* Color de la fuente */
+           font-size: 24px; /* Tamaño de la fuente */
+           padding-top: 5px;
+           padding-bottom: 5px;
+        }
+        #apellidoynombre {
+            padding: 10px;
+        }
+        h4{
+            text-align: center;
+            font-size: 10px;
+            padding: 0px;
+            margin-top: 0px;
+            visibility: hidden; 
+            
+        }
+
+        /* Barra de menú */
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            margin-top: -50px;
+            margin-bottom: 60px;
+        }
+
+        .menu button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .menulogin button {
+            padding: 10px 20px;
+            margin-top: 5px;
+            margin-bottom: 0px;
+            margin-left: 900px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Botones deshabilitados */
+        .menu button:disabled {
+            background-color: #ccc;
+            color: #777;
+            cursor: not-allowed;
+        }
+
+        /* Botón de login habilitado */
+        .menulogin button.enabled {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .menulogin button.enabled:hover {
+            background-color: #218838;
+        }
+
+        /* Formulario de login */
+        .login-form {
+            display: none; /* Oculto por defecto */
+            background-color: white;
+            width: 350px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Botón del formulario */
+        .login-form button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left:40px;
+        }
+
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
+
+        label {
+            margin-left: 10px;
+        }
+
+        input {
+            margin-left: 10px;
+        }
+
+        h2 {
+            margin-top: 10px;
+        }
+
+        /* Estilo del footer para que se coloque sobre la imagen */
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        h3 {
+            margin: 0;
+        }
+        #contenedor{
+          display: none;
+          background-color: rgb(101, 104, 104);
+          width: auto;
+          height: 200px;
+          border-radius: 5px;  
+        }
+        #pagina {
+    width: 80%;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#titulo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#contenido {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
